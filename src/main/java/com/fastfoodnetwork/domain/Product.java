@@ -2,11 +2,7 @@ package com.fastfoodnetwork.domain;
 
 import java.time.LocalDate;
 
-/**
- * Этот класс представляет продукт в инвентаре.
- */
 public class Product {
-    // Поля
     private String id;
     private String name;
     private int quantity;
@@ -16,7 +12,6 @@ public class Product {
     private int criticalLevel;
     private String temperatureMode;
 
-    // Конструктор
     public Product(String id, String name, int quantity, LocalDate expiryDate, int minimumStock, int optimalStock, int criticalLevel, String temperatureMode) {
         this.id = id;
         this.name = name;
@@ -94,15 +89,14 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", quantity=" + quantity +
-                ", expiryDate=" + expiryDate +
-                ", minimumStock=" + minimumStock +
-                ", optimalStock=" + optimalStock +
-                ", criticalLevel=" + criticalLevel +
-                ", temperatureMode='" + temperatureMode + '\'' +
-                '}';
+        return "Продукт: " +
+                "ID='" + id + '\'' +
+                ", Название='" + name + '\'' +
+                ", Количество=" + quantity +
+                ", Срок годности=" + expiryDate +
+                ", Мин. запас=" + minimumStock +
+                ", Оптимальный запас=" + optimalStock +
+                ", Критический уровень=" + criticalLevel +
+                ", Температурный режим='" + temperatureMode + '\'';
     }
 }

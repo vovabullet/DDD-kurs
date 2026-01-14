@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Сервис для управления инвентарем.
- * Предоставляет методы для взаимодействия с инвентарем на уровне приложения.
+ * Предоставляет методы для взаимодействия с инвентарем.
  */
 public class InventoryService {
     private final Inventory inventory;
