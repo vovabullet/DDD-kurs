@@ -4,3 +4,4 @@ src/main/java/com/fastfoodnetwork/ui/Main.java
 src/main/java/com/fastfoodnetwork/domain/ProductRepository.java
 src/main/java/com/fastfoodnetwork/domain/Inventory.java
 src/main/java/com/fastfoodnetwork/domain/Product.java
+src/main/java/com/fastfoodnetwork/ui/ConsoleUI.java

@@ -2,7 +2,11 @@ package com.fastfoodnetwork.domain;
 
 import java.time.LocalDate;
 
+/**
+ * Этот класс представляет продукт в инвентаре.
+ */
 public class Product {
+    // Поля
     private String id;
     private String name;
     private int quantity;
@@ -12,6 +16,7 @@ public class Product {
     private int criticalLevel;
     private String temperatureMode;
 
+    // Конструктор
     public Product(String id, String name, int quantity, LocalDate expiryDate, int minimumStock, int optimalStock, int criticalLevel, String temperatureMode) {
         this.id = id;
         this.name = name;
