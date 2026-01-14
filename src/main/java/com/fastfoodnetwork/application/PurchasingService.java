@@ -1,11 +1,10 @@
-package com.fastfoodnetwork.purchasing.application;
+package com.fastfoodnetwork.application;
 
-import com.fastfoodnetwork.inventory.domain.Product;
-import com.fastfoodnetwork.purchasing.domain.Delivery;
-import com.fastfoodnetwork.purchasing.domain.DeliveryRepository;
-import com.fastfoodnetwork.purchasing.domain.SupplyOrder;
-import com.fastfoodnetwork.purchasing.domain.SupplyOrderRepository;
-import com.fastfoodnetwork.inventory.application.InventoryService;
+import com.fastfoodnetwork.domain.Product;
+import com.fastfoodnetwork.domain.Delivery;
+import com.fastfoodnetwork.domain.DeliveryRepository;
+import com.fastfoodnetwork.domain.SupplyOrder;
+import com.fastfoodnetwork.domain.SupplyOrderRepository;
 
 import java.util.List;
 import java.util.Map;

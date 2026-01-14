@@ -1,4 +1,4 @@
-package com.fastfoodnetwork.purchasing.domain;
+package com.fastfoodnetwork.domain;
 
 import java.util.Optional;
 import java.util.List;

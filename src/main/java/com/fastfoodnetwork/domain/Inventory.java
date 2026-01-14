@@ -1,4 +1,4 @@
-package com.fastfoodnetwork.inventory.domain;
+package com.fastfoodnetwork.domain;
 
 import java.time.LocalDate;
 import java.util.List;

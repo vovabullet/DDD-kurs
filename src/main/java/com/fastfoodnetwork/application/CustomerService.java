@@ -1,16 +1,12 @@
-package com.fastfoodnetwork.customerservice.application;
+package com.fastfoodnetwork.application;
 
-import com.fastfoodnetwork.customerservice.domain.CustomerOrder;
-import com.fastfoodnetwork.customerservice.domain.CustomerOrderRepository;
-import com.fastfoodnetwork.inventory.application.InventoryService;
-import com.fastfoodnetwork.menu.application.MenuService;
-import com.fastfoodnetwork.menu.domain.Dish;
-import com.fastfoodnetwork.menu.domain.Menu;
+import com.fastfoodnetwork.domain.CustomerOrder;
+import com.fastfoodnetwork.domain.CustomerOrderRepository;
+import com.fastfoodnetwork.domain.Dish;
+import com.fastfoodnetwork.domain.Menu;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Сервис для управления клиентскими заказами.

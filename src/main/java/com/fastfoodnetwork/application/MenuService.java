@@ -1,10 +1,9 @@
-package com.fastfoodnetwork.menu.application;
+package com.fastfoodnetwork.application;
 
-import com.fastfoodnetwork.inventory.application.InventoryService;
-import com.fastfoodnetwork.inventory.domain.Product;
-import com.fastfoodnetwork.menu.domain.Dish;
-import com.fastfoodnetwork.menu.domain.Menu;
-import com.fastfoodnetwork.menu.domain.MenuRepository;
+import com.fastfoodnetwork.domain.Product;
+import com.fastfoodnetwork.domain.Dish;
+import com.fastfoodnetwork.domain.Menu;
+import com.fastfoodnetwork.domain.MenuRepository;
 
 import java.util.Map;
 import java.util.Optional;

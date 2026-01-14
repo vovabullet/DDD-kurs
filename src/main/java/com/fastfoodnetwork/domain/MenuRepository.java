@@ -1,4 +1,4 @@
-package com.fastfoodnetwork.menu.domain;
+package com.fastfoodnetwork.domain;
 
 import java.util.Optional;
 

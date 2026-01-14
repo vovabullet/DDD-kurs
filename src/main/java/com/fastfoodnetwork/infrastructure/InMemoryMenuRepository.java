@@ -1,8 +1,8 @@
-package com.fastfoodnetwork.menu.infrastructure;
+package com.fastfoodnetwork.infrastructure;
 
-import com.fastfoodnetwork.menu.domain.Dish;
-import com.fastfoodnetwork.menu.domain.Menu;
-import com.fastfoodnetwork.menu.domain.MenuRepository;
+import com.fastfoodnetwork.domain.Dish;
+import com.fastfoodnetwork.domain.Menu;
+import com.fastfoodnetwork.domain.MenuRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +12,10 @@ public class InMemoryMenuRepository implements MenuRepository {
     private final Map<String, Menu> menus = new HashMap<>();
 
     public InMemoryMenuRepository() {
-        // Создаем тестовое меню для ресторана "main_restaurant"
-        Menu mainMenu = new Menu("main_menu", "main_restaurant");
-        mainMenu.addDish(new Dish("d1", "Классический Бургер", "Бургер с говяжьей котлетой", 350.0, Map.of("1", 2, "2", 1, "3", 1)));
-        mainMenu.addDish(new Dish("d2", "Картофель Фри", "Хрустящий картофель", 150.0, Map.of("5", 1))); // Предполагаем, что картофель - продукт с ID 5
+        // тестовое меню
+        Menu mainMenu = new Menu("1", "1");
+        mainMenu.addDish(new Dish("1", "Классический Бургер", "Бургер с говяжьей котлетой", 350.0, Map.of("1", 2, "2", 1, "3", 1)));
+        mainMenu.addDish(new Dish("2", "Картофель Фри", "Хрустящий картофель", 150.0, Map.of("5", 1)));
         menus.put(mainMenu.getId(), mainMenu);
     }
 

@@ -1,10 +1,8 @@
-package com.fastfoodnetwork.inventory.application;
+package com.fastfoodnetwork.application;
 
-import com.fastfoodnetwork.inventory.domain.Inventory;
-import com.fastfoodnetwork.inventory.domain.Product;
-import com.fastfoodnetwork.inventory.domain.ProductRepository;
-
-import com.fastfoodnetwork.purchasing.application.PurchasingService;
+import com.fastfoodnetwork.domain.Inventory;
+import com.fastfoodnetwork.domain.Product;
+import com.fastfoodnetwork.domain.ProductRepository;
 
 import java.time.LocalDate;
 import java.util.List;

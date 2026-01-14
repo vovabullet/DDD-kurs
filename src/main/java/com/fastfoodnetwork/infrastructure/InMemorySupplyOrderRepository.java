@@ -1,7 +1,7 @@
-package com.fastfoodnetwork.purchasing.infrastructure;
+package com.fastfoodnetwork.infrastructure;
 
-import com.fastfoodnetwork.purchasing.domain.SupplyOrder;
-import com.fastfoodnetwork.purchasing.domain.SupplyOrderRepository;
+import com.fastfoodnetwork.domain.SupplyOrder;
+import com.fastfoodnetwork.domain.SupplyOrderRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

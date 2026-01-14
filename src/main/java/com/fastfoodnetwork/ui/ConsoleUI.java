@@ -1,20 +1,20 @@
 package com.fastfoodnetwork.ui;
 
-import com.fastfoodnetwork.inventory.application.InventoryService;
-import com.fastfoodnetwork.inventory.domain.Product;
-import com.fastfoodnetwork.inventory.infrastructure.InMemoryProductRepository;
-import com.fastfoodnetwork.purchasing.application.PurchasingService;
-import com.fastfoodnetwork.purchasing.domain.Delivery;
-import com.fastfoodnetwork.purchasing.domain.SupplyOrder;
-import com.fastfoodnetwork.purchasing.infrastructure.InMemoryDeliveryRepository;
-import com.fastfoodnetwork.purchasing.infrastructure.InMemorySupplyOrderRepository;
-import com.fastfoodnetwork.menu.application.MenuService;
-import com.fastfoodnetwork.menu.domain.Dish;
-import com.fastfoodnetwork.menu.domain.Menu;
-import com.fastfoodnetwork.menu.infrastructure.InMemoryMenuRepository;
-import com.fastfoodnetwork.customerservice.application.CustomerService;
-import com.fastfoodnetwork.customerservice.domain.CustomerOrder;
-import com.fastfoodnetwork.customerservice.infrastructure.InMemoryCustomerOrderRepository;
+import com.fastfoodnetwork.application.InventoryService;
+import com.fastfoodnetwork.domain.Product;
+import com.fastfoodnetwork.infrastructure.InMemoryProductRepository;
+import com.fastfoodnetwork.application.PurchasingService;
+import com.fastfoodnetwork.domain.Delivery;
+import com.fastfoodnetwork.domain.SupplyOrder;
+import com.fastfoodnetwork.infrastructure.InMemoryDeliveryRepository;
+import com.fastfoodnetwork.infrastructure.InMemorySupplyOrderRepository;
+import com.fastfoodnetwork.application.MenuService;
+import com.fastfoodnetwork.domain.Dish;
+import com.fastfoodnetwork.domain.Menu;
+import com.fastfoodnetwork.infrastructure.InMemoryMenuRepository;
+import com.fastfoodnetwork.application.CustomerService;
+import com.fastfoodnetwork.domain.CustomerOrder;
+import com.fastfoodnetwork.infrastructure.InMemoryCustomerOrderRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -212,7 +212,7 @@ public class ConsoleUI {
 
     private void viewMenu() {
         try {
-            Menu menu = menuService.getMenuForRestaurant("main_restaurant");
+            Menu menu = menuService.getMenuForRestaurant("1");
             System.out.println("\n--- Меню для ресторана: " + menu.getRestaurantId() + " ---");
             if (menu.getDishes().isEmpty()) {
                 System.out.println("Меню пустое.");

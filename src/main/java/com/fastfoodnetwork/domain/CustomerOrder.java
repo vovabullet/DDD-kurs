@@ -1,4 +1,4 @@
-package com.fastfoodnetwork.customerservice.domain;
+package com.fastfoodnetwork.domain;
 
 import java.util.Date;
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.fastfoodnetwork.customerservice.infrastructure;
+package com.fastfoodnetwork.infrastructure;
 
-import com.fastfoodnetwork.customerservice.domain.CustomerOrder;
-import com.fastfoodnetwork.customerservice.domain.CustomerOrderRepository;
+import com.fastfoodnetwork.domain.CustomerOrder;
+import com.fastfoodnetwork.domain.CustomerOrderRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
