@@ -26,12 +26,11 @@ public class Inventory {
     public void addProduct(Product product) {
         productRepository.findById(product.getId()).ifPresentOrElse(existing -> {
             existing.setQuantity(existing.getQuantity() + product.getQuantity());
+            // Используем самый ранний срок годности, чтобы инвентарь оставался безопасным при смешении партий.
             if (product.getExpiryDate().isBefore(existing.getExpiryDate())) {
                 existing.setExpiryDate(product.getExpiryDate());
             }
-            existing.setMinimumStock(product.getMinimumStock());
-            existing.setOptimalStock(product.getOptimalStock());
-            existing.setCriticalLevel(product.getCriticalLevel());
+            existing.updateStockThresholds(product.getMinimumStock(), product.getOptimalStock(), product.getCriticalLevel());
             existing.setTemperatureMode(product.getTemperatureMode());
             productRepository.save(existing);
         }, () -> productRepository.save(product));
@@ -70,8 +69,7 @@ public class Inventory {
         LocalDate today = LocalDate.now();
         productRepository.findAll().forEach(product -> {
             if (product.isExpired(today)) {
-                product.setQuantity(0);
-                productRepository.save(product);
+                productRepository.deleteById(product.getId());
             }
         });
     }
