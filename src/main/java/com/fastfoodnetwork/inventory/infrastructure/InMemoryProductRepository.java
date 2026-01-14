@@ -1,7 +1,7 @@
-package com.fastfoodnetwork.infrastructure;
+package com.fastfoodnetwork.inventory.infrastructure;
 
-import com.fastfoodnetwork.domain.Product;
-import com.fastfoodnetwork.domain.ProductRepository;
+import com.fastfoodnetwork.inventory.domain.Product;
+import com.fastfoodnetwork.inventory.domain.ProductRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

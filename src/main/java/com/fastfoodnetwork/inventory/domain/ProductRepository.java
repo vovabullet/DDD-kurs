@@ -1,4 +1,4 @@
-package com.fastfoodnetwork.domain;
+package com.fastfoodnetwork.inventory.domain;
 
 import java.util.List;
 import java.util.Optional;

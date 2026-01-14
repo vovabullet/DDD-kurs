@@ -1,11 +1,15 @@
-package com.fastfoodnetwork.application;
+package com.fastfoodnetwork.inventory.application;
 
-import com.fastfoodnetwork.domain.Inventory;
-import com.fastfoodnetwork.domain.Product;
-import com.fastfoodnetwork.domain.ProductRepository;
+import com.fastfoodnetwork.inventory.domain.Inventory;
+import com.fastfoodnetwork.inventory.domain.Product;
+import com.fastfoodnetwork.inventory.domain.ProductRepository;
+
+import com.fastfoodnetwork.purchasing.application.PurchasingService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Сервис для управления инвентарем.
@@ -14,6 +18,7 @@ import java.util.List;
 public class InventoryService {
     private final Inventory inventory;
     private final ProductRepository productRepository;
+    private PurchasingService purchasingService; // Зависимость для политики
 
     /**
      * Конструктор для создания сервиса инвентаризации.
@@ -22,6 +27,11 @@ public class InventoryService {
     public InventoryService(ProductRepository productRepository) {
         this.productRepository = productRepository;
         this.inventory = new Inventory(productRepository);
+    }
+
+    // Сеттер для внедрения зависимости, чтобы избежать цикличности
+    public void setPurchasingService(PurchasingService purchasingService) {
+        this.purchasingService = purchasingService;
     }
 
     /**
@@ -37,6 +47,21 @@ public class InventoryService {
      */
     public void useProduct(String productId, int quantity) {
         inventory.useProduct(productId, quantity);
+
+        // Политика: Автоматический заказ при достижении критического уровня
+        productRepository.findById(productId).ifPresent(product -> {
+            if (product.getQuantity() <= product.getCriticalLevel()) {
+                System.out.println("ПОЛИТИКА: Продукт '" + product.getName() + "' достиг критического уровня. Создание автоматического заказа...");
+                if (purchasingService != null) {
+                    String orderId = "auto-order-" + productId + "-" + System.currentTimeMillis();
+                    // Заказываем количество, равное оптимальному запасу
+                    purchasingService.createSupplyOrder(orderId, "default-supplier", Map.of(productId, product.getOptimalStock()));
+                    System.out.println("ПОЛИТИКА: Автоматический заказ '" + orderId + "' успешно создан.");
+                } else {
+                    System.out.println("ПОЛИТИКА ПРЕДУПРЕЖДЕНИЕ: PurchasingService не установлен, автоматический заказ не создан.");
+                }
+            }
+        });
     }
 
     /**
@@ -74,5 +99,12 @@ public class InventoryService {
      */
     public List<Product> getAllProducts() {
         return inventory.getAllProducts();
+    }
+
+    /**
+     * Находит продукт по ID.
+     */
+    public Optional<Product> findProductById(String productId) {
+        return productRepository.findById(productId);
     }
 }
