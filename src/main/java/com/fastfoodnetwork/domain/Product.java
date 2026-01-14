@@ -13,14 +13,15 @@ public class Product {
     private String temperatureMode;
 
     public Product(String id, String name, int quantity, LocalDate expiryDate, int minimumStock, int optimalStock, int criticalLevel, String temperatureMode) {
-        this.id = id;
-        this.name = name;
+        this.id = requireText(id, "ID");
+        this.name = requireText(name, "Название");
+        validateStockRules(quantity, minimumStock, optimalStock, criticalLevel);
         this.quantity = quantity;
-        this.expiryDate = expiryDate;
+        this.expiryDate = requireExpiryDate(expiryDate);
         this.minimumStock = minimumStock;
         this.optimalStock = optimalStock;
         this.criticalLevel = criticalLevel;
-        this.temperatureMode = temperatureMode;
+        this.temperatureMode = requireText(temperatureMode, "Температурный режим");
     }
 
     public String getId() {
@@ -44,6 +45,9 @@ public class Product {
     }
 
     public void setQuantity(int quantity) {
+        if (quantity < 0) {
+            throw new InventoryValidationException("Количество не может быть отрицательным");
+        }
         this.quantity = quantity;
     }
 
@@ -52,6 +56,9 @@ public class Product {
     }
 
     public void setExpiryDate(LocalDate expiryDate) {
+        if (expiryDate == null || expiryDate.isBefore(LocalDate.now())) {
+            throw new InventoryValidationException("Срок годности не может быть в прошлом");
+        }
         this.expiryDate = expiryDate;
     }
 
@@ -60,6 +67,7 @@ public class Product {
     }
 
     public void setMinimumStock(int minimumStock) {
+        validateStockRules(quantity, minimumStock, optimalStock, criticalLevel);
         this.minimumStock = minimumStock;
     }
 
@@ -68,6 +76,7 @@ public class Product {
     }
 
     public void setOptimalStock(int optimalStock) {
+        validateStockRules(quantity, minimumStock, optimalStock, criticalLevel);
         this.optimalStock = optimalStock;
     }
 
@@ -76,6 +85,7 @@ public class Product {
     }
 
     public void setCriticalLevel(int criticalLevel) {
+        validateStockRules(quantity, minimumStock, optimalStock, criticalLevel);
         this.criticalLevel = criticalLevel;
     }
 
@@ -84,7 +94,7 @@ public class Product {
     }
 
     public void setTemperatureMode(String temperatureMode) {
-        this.temperatureMode = temperatureMode;
+        this.temperatureMode = requireText(temperatureMode, "Температурный режим");
     }
 
     @Override
@@ -98,5 +108,45 @@ public class Product {
                 ", Оптимальный запас=" + optimalStock +
                 ", Критический уровень=" + criticalLevel +
                 ", Температурный режим='" + temperatureMode + '\'';
+    }
+
+    public boolean isExpired(LocalDate onDate) {
+        return expiryDate.isBefore(onDate) || expiryDate.isEqual(onDate);
+    }
+
+    public boolean isCriticalLevelReached() {
+        return quantity <= criticalLevel;
+    }
+
+    private static String requireText(String value, String field) {
+        if (value == null || value.isBlank()) {
+            throw new InventoryValidationException(field + " обязателен для заполнения");
+        }
+        return value;
+    }
+
+    private static LocalDate requireExpiryDate(LocalDate expiryDate) {
+        if (expiryDate == null) {
+            throw new InventoryValidationException("Срок годности обязателен для заполнения");
+        }
+        if (expiryDate.isBefore(LocalDate.now())) {
+            throw new InventoryValidationException("Нельзя добавить просроченный продукт");
+        }
+        return expiryDate;
+    }
+
+    private static void validateStockRules(int quantity, int minimumStock, int optimalStock, int criticalLevel) {
+        if (quantity < 0) {
+            throw new InventoryValidationException("Количество не может быть отрицательным");
+        }
+        if (minimumStock < 0 || optimalStock < 0 || criticalLevel < 0) {
+            throw new InventoryValidationException("Уровни запасов не могут быть отрицательными");
+        }
+        if (minimumStock > optimalStock) {
+            throw new InventoryValidationException("Минимальный запас не может превышать оптимальный");
+        }
+        if (criticalLevel > minimumStock) {
+            throw new InventoryValidationException("Критический уровень не может превышать минимальный запас");
+        }
     }
 }

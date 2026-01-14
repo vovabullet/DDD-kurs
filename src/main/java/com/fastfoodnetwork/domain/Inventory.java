@@ -24,7 +24,17 @@ public class Inventory {
      * @param product продукт для добавления.
      */
     public void addProduct(Product product) {
-        productRepository.save(product);
+        productRepository.findById(product.getId()).ifPresentOrElse(existing -> {
+            existing.setQuantity(existing.getQuantity() + product.getQuantity());
+            if (product.getExpiryDate().isBefore(existing.getExpiryDate())) {
+                existing.setExpiryDate(product.getExpiryDate());
+            }
+            existing.setMinimumStock(product.getMinimumStock());
+            existing.setOptimalStock(product.getOptimalStock());
+            existing.setCriticalLevel(product.getCriticalLevel());
+            existing.setTemperatureMode(product.getTemperatureMode());
+            productRepository.save(existing);
+        }, () -> productRepository.save(product));
     }
 
     /**
@@ -33,23 +43,35 @@ public class Inventory {
      * @param quantity количество для списания.
      */
     public void useProduct(String productId, int quantity) {
-        productRepository.findById(productId).ifPresent(product -> {
-            int newQuantity = product.getQuantity() - quantity;
-            if (newQuantity < 0) {
-                throw new IllegalArgumentException("Недостаточно продукта на складе");
-            }
-            product.setQuantity(newQuantity);
-            productRepository.save(product);
-        });
+        if (quantity <= 0) {
+            throw new InventoryValidationException("Количество для списания должно быть больше нуля");
+        }
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        if (product.isExpired(LocalDate.now())) {
+            throw new ExpiredProductException(productId, product.getExpiryDate());
+        }
+
+        int newQuantity = product.getQuantity() - quantity;
+        if (newQuantity < 0) {
+            throw new InsufficientStockException(productId, quantity, product.getQuantity());
+        }
+
+        product.setQuantity(newQuantity);
+        productRepository.save(product);
     }
 
     /**
      * Списывает все просроченные продукты.
      */
     public void writeOffExpiredProducts() {
+        LocalDate today = LocalDate.now();
         productRepository.findAll().forEach(product -> {
-            if (product.getExpiryDate().isBefore(LocalDate.now())) {
-                productRepository.deleteById(product.getId());
+            if (product.isExpired(today)) {
+                product.setQuantity(0);
+                productRepository.save(product);
             }
         });
     }
@@ -60,10 +82,15 @@ public class Inventory {
      * @param actualQuantity фактическое количество.
      */
     public void adjustInventory(String productId, int actualQuantity) {
-        productRepository.findById(productId).ifPresent(product -> {
-            product.setQuantity(actualQuantity);
-            productRepository.save(product);
-        });
+        if (actualQuantity < 0) {
+            throw new InventoryValidationException("Фактическое количество не может быть отрицательным");
+        }
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        product.setQuantity(actualQuantity);
+        productRepository.save(product);
     }
 
     /**
@@ -72,7 +99,7 @@ public class Inventory {
      */
     public List<Product> getProductsWithCriticalStockLevel() {
         return productRepository.findAll().stream()
-                .filter(product -> product.getQuantity() <= product.getCriticalLevel())
+                .filter(Product::isCriticalLevelReached)
                 .collect(Collectors.toList());
     }
 

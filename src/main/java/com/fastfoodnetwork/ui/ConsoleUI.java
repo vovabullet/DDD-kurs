@@ -101,8 +101,12 @@ public class ConsoleUI {
         System.out.print("Введите температурный режим: ");
         String temperatureMode = scanner.nextLine();
 
-        inventoryService.addProduct(id, name, quantity, expiryDate, minimumStock, optimalStock, criticalLevel, temperatureMode);
-        System.out.println("Продукт успешно добавлен.");
+        try {
+            inventoryService.addProduct(id, name, quantity, expiryDate, minimumStock, optimalStock, criticalLevel, temperatureMode);
+            System.out.println("Продукт успешно добавлен.");
+        } catch (RuntimeException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
     }
 
     private void useProduct() {
@@ -110,12 +114,10 @@ public class ConsoleUI {
         String id = scanner.nextLine();
         int quantity = getIntInput("Введите количество для списания: ");
 
-        try {
+        executeSafely(() -> {
             inventoryService.useProduct(id, quantity);
             System.out.println("Продукт успешно списан.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
+        });
     }
 
     private void adjustInventory() {
@@ -123,8 +125,10 @@ public class ConsoleUI {
         String id = scanner.nextLine();
         int quantity = getIntInput("Введите фактическое количество: ");
 
-        inventoryService.adjustInventory(id, quantity);
-        System.out.println("Инвентарь успешно скорректирован.");
+        executeSafely(() -> {
+            inventoryService.adjustInventory(id, quantity);
+            System.out.println("Инвентарь успешно скорректирован.");
+        });
     }
 
     private void writeOffExpiredProducts() {
@@ -143,6 +147,14 @@ public class ConsoleUI {
         } else {
             System.out.println("Продукты с критическим уровнем запасов:");
             criticalStockProducts.forEach(System.out::println);
+        }
+    }
+
+    private void executeSafely(Runnable action) {
+        try {
+            action.run();
+        } catch (RuntimeException e) {
+            System.out.println("Ошибка: " + e.getMessage());
         }
     }
 

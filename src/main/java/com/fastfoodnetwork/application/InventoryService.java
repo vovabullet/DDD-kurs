@@ -58,7 +58,17 @@ public class InventoryService {
      */
     public String generateStockReport() {
         StringBuilder report = new StringBuilder("Отчет о текущих запасах:\n");
-        inventory.getAllProducts().forEach(product -> report.append(product.toString()).append("\n"));
+        LocalDate today = LocalDate.now();
+        inventory.getAllProducts().forEach(product -> {
+            report.append(product.toString());
+            if (product.isExpired(today)) {
+                report.append(" [ПРОСРОЧЕН]");
+            }
+            if (product.isCriticalLevelReached()) {
+                report.append(" [КРИТИЧЕСКИЙ УРОВЕНЬ]");
+            }
+            report.append("\n");
+        });
         return report.toString();
     }
 
