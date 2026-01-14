@@ -1,7 +1,7 @@
-package com.fastfoodnetwork.purchasing.infrastructure;
+package com.fastfoodnetwork.purchasing.adapter.out.persistence;
 
+import com.fastfoodnetwork.purchasing.application.port.out.DeliveryRepository;
 import com.fastfoodnetwork.purchasing.domain.Delivery;
-import com.fastfoodnetwork.purchasing.domain.DeliveryRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;

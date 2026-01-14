@@ -3,11 +3,13 @@ package com.fastfoodnetwork.ui;
 import com.fastfoodnetwork.inventory.application.InventoryService;
 import com.fastfoodnetwork.inventory.domain.Product;
 import com.fastfoodnetwork.inventory.infrastructure.InMemoryProductRepository;
-import com.fastfoodnetwork.purchasing.application.PurchasingService;
-import com.fastfoodnetwork.purchasing.domain.Delivery;
-import com.fastfoodnetwork.purchasing.domain.SupplyOrder;
-import com.fastfoodnetwork.purchasing.infrastructure.InMemoryDeliveryRepository;
-import com.fastfoodnetwork.purchasing.infrastructure.InMemorySupplyOrderRepository;
+import com.fastfoodnetwork.purchasing.adapter.in.console.PurchasingConsoleAdapter;
+import com.fastfoodnetwork.purchasing.application.port.in.SupplyOrderUseCase;
+import com.fastfoodnetwork.purchasing.application.port.out.SupplierNotificationPort;
+import com.fastfoodnetwork.purchasing.application.service.SupplyOrderService;
+import com.fastfoodnetwork.purchasing.adapter.out.notification.ConsoleSupplierNotifier;
+import com.fastfoodnetwork.purchasing.adapter.out.persistence.InMemoryDeliveryRepository;
+import com.fastfoodnetwork.purchasing.adapter.out.persistence.InMemorySupplyOrderRepository;
 import com.fastfoodnetwork.menu.application.MenuService;
 import com.fastfoodnetwork.menu.domain.Dish;
 import com.fastfoodnetwork.menu.domain.Menu;
@@ -27,27 +29,31 @@ import java.util.Scanner;
 
 public class ConsoleUI {
     private final InventoryService inventoryService;
-    private final PurchasingService purchasingService;
+    private final PurchasingConsoleAdapter purchasingConsoleAdapter;
     private final MenuService menuService;
     private final CustomerService customerService;
     private final Scanner scanner = new Scanner(System.in);
 
     public ConsoleUI() {
-        // Инициализация репозиториев
+        // Инициализация репозиториев и адаптеров вывода
         InMemoryProductRepository productRepository = new InMemoryProductRepository();
         InMemorySupplyOrderRepository supplyOrderRepository = new InMemorySupplyOrderRepository();
         InMemoryDeliveryRepository deliveryRepository = new InMemoryDeliveryRepository();
         InMemoryMenuRepository menuRepository = new InMemoryMenuRepository();
         InMemoryCustomerOrderRepository customerOrderRepository = new InMemoryCustomerOrderRepository();
+        SupplierNotificationPort supplierNotificationPort = new ConsoleSupplierNotifier();
 
-        // Инициализация сервисов
+        // Инициализация сервисов (ядро)
         this.inventoryService = new InventoryService(productRepository);
-        this.purchasingService = new PurchasingService(supplyOrderRepository, deliveryRepository, inventoryService);
+        SupplyOrderUseCase supplyOrderUseCase = new SupplyOrderService(supplyOrderRepository, deliveryRepository, supplierNotificationPort, inventoryService);
         this.menuService = new MenuService(menuRepository, inventoryService);
         this.customerService = new CustomerService(customerOrderRepository, menuService, inventoryService);
 
         // Внедрение зависимостей для политик (избегая циклов в конструкторе)
-        inventoryService.setPurchasingService(purchasingService);
+        inventoryService.setPurchasingService(supplyOrderUseCase);
+
+        // Инициализация адаптеров ввода
+        this.purchasingConsoleAdapter = new PurchasingConsoleAdapter(supplyOrderUseCase, scanner);
     }
 
     public void start() {
@@ -129,50 +135,7 @@ public class ConsoleUI {
     }
 
     private void managePurchasing() {
-        while (true) {
-            printPurchasingMenu();
-            int choice = getIntInput("");
-            switch (choice) {
-                case 1:
-                    createSupplyOrder();
-                    break;
-                case 2:
-                    confirmSupplyOrder();
-                    break;
-                case 3:
-                    sendSupplyOrder();
-                    break;
-                case 4:
-                    markDeliveryArrived();
-                    break;
-                case 5:
-                    acceptDelivery();
-                    break;
-                case 6:
-                    viewAllOrders();
-                    break;
-                case 7:
-                    viewAllDeliveries();
-                    break;
-                case 0:
-                    return;
-                default:
-                    System.out.println("Неверный выбор. Пожалуйста, попробуйте снова.");
-            }
-        }
-    }
-
-    private void printPurchasingMenu() {
-        System.out.println("\n--- Управление закупками ---");
-        System.out.println("1. Создать заказ поставщику");
-        System.out.println("2. Подтвердить заказ");
-        System.out.println("3. Отправить заказ");
-        System.out.println("4. Отметить прибытие поставки");
-        System.out.println("5. Принять поставку");
-        System.out.println("6. Посмотреть все заказы");
-        System.out.println("7. Посмотреть все поставки");
-        System.out.println("0. Назад");
-        System.out.print("Введите ваш выбор: ");
+        purchasingConsoleAdapter.managePurchasing();
     }
 
     private void manageMenu() {
@@ -348,88 +311,6 @@ public class ConsoleUI {
         }
     }
 
-    private void createSupplyOrder() {
-        System.out.print("Введите ID заказа: ");
-        String orderId = scanner.nextLine();
-        System.out.print("Введите ID поставщика: ");
-        String supplierId = scanner.nextLine();
-        Map<String, Integer> products = new HashMap<>();
-        while (true) {
-            System.out.print("Введите ID продукта (или 'готово' для завершения): ");
-            String productId = scanner.nextLine();
-            if (productId.equalsIgnoreCase("готово")) {
-                break;
-            }
-            int quantity = getIntInput("Введите количество: ");
-            products.put(productId, quantity);
-        }
-        purchasingService.createSupplyOrder(orderId, supplierId, products);
-        System.out.println("Заказ успешно создан.");
-    }
-
-    private void confirmSupplyOrder() {
-        System.out.print("Введите ID заказа для подтверждения: ");
-        String orderId = scanner.nextLine();
-        try {
-            purchasingService.confirmSupplyOrder(orderId);
-            System.out.println("Заказ успешно подтвержден.");
-        } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
-    }
-
-    private void sendSupplyOrder() {
-        System.out.print("Введите ID заказа для отправки: ");
-        String orderId = scanner.nextLine();
-        try {
-            Delivery delivery = purchasingService.sendSupplyOrder(orderId);
-            System.out.println("Заказ успешно отправлен. Создана поставка с ID: " + delivery.getId());
-        } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
-    }
-
-    private void markDeliveryArrived() {
-        System.out.print("Введите ID поставки для отметки о прибытии: ");
-        String deliveryId = scanner.nextLine();
-        try {
-            purchasingService.markDeliveryAsArrived(deliveryId);
-            System.out.println("Поставка успешно отмечена как прибывшая.");
-        } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
-    }
-
-    private void acceptDelivery() {
-        System.out.print("Введите ID поставки для приемки: ");
-        String deliveryId = scanner.nextLine();
-        try {
-            purchasingService.acceptDelivery(deliveryId);
-            System.out.println("Поставка успешно принята, продукты добавлены в инвентарь.");
-        } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
-    }
-
-    private void viewAllOrders() {
-        System.out.println("\n--- Все заказы поставщикам ---");
-        List<SupplyOrder> orders = purchasingService.getAllSupplyOrders();
-        if (orders.isEmpty()) {
-            System.out.println("Заказов пока нет.");
-        } else {
-            orders.forEach(System.out::println);
-        }
-    }
-
-    private void viewAllDeliveries() {
-        System.out.println("\n--- Все поставки ---");
-        List<Delivery> deliveries = purchasingService.getAllDeliveries();
-        if (deliveries.isEmpty()) {
-            System.out.println("Поставок пока нет.");
-        } else {
-            deliveries.forEach(System.out::println);
-        }
-    }
 
     private void addProduct() {
         System.out.print("Введите ID продукта: ");

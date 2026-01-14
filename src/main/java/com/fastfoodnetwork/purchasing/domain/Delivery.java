@@ -28,20 +28,23 @@ public class Delivery {
         }
     }
 
-    public void markAsAccepted() {
-        if (this.status == DeliveryStatus.ARRIVED) {
+    public void markAsAccepted(boolean qualityCheckPassed) {
+        if (this.status != DeliveryStatus.ARRIVED) {
+            throw new IllegalStateException("Продукты могут быть приняты только после прибытия поставки");
+        }
+        if (qualityCheckPassed) {
             this.status = DeliveryStatus.ACCEPTED;
         } else {
-            throw new IllegalStateException("Продукты могут быть приняты только после прибытия поставки");
+            markAsRejected("Контроль качества не пройден");
         }
     }
 
-    public void markAsRejected() {
-        if (this.status == DeliveryStatus.ARRIVED) {
-            this.status = DeliveryStatus.REJECTED;
-        } else {
+    public void markAsRejected(String reason) {
+        if (this.status != DeliveryStatus.ARRIVED) {
             throw new IllegalStateException("Продукты могут быть отклонены только после прибытия поставки");
         }
+        this.status = DeliveryStatus.REJECTED;
+        // Здесь можно было бы сохранить причину `reason` в поле, если бы оно было
     }
 
     // Getters

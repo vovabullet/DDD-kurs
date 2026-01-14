@@ -1,5 +1,6 @@
-package com.fastfoodnetwork.purchasing.domain;
+package com.fastfoodnetwork.purchasing.application.port.out;
 
+import com.fastfoodnetwork.purchasing.domain.SupplyOrder;
 import java.util.List;
 import java.util.Optional;
 

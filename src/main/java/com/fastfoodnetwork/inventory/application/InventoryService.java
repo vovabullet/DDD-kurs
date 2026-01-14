@@ -4,7 +4,7 @@ import com.fastfoodnetwork.inventory.domain.Inventory;
 import com.fastfoodnetwork.inventory.domain.Product;
 import com.fastfoodnetwork.inventory.domain.ProductRepository;
 
-import com.fastfoodnetwork.purchasing.application.PurchasingService;
+import com.fastfoodnetwork.purchasing.application.port.in.SupplyOrderUseCase;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class InventoryService {
     private final Inventory inventory;
     private final ProductRepository productRepository;
-    private PurchasingService purchasingService; // Зависимость для политики
+    private SupplyOrderUseCase purchasingService; // Зависимость для политики
 
     /**
      * Конструктор для создания сервиса инвентаризации.
@@ -30,7 +30,7 @@ public class InventoryService {
     }
 
     // Сеттер для внедрения зависимости, чтобы избежать цикличности
-    public void setPurchasingService(PurchasingService purchasingService) {
+    public void setPurchasingService(SupplyOrderUseCase purchasingService) {
         this.purchasingService = purchasingService;
     }
 

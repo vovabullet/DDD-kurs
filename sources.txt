@@ -5,13 +5,13 @@ src/main/java/com/fastfoodnetwork/inventory/domain/ProductRepository.java
 src/main/java/com/fastfoodnetwork/inventory/domain/Inventory.java
 src/main/java/com/fastfoodnetwork/inventory/domain/Product.java
 src/main/java/com/fastfoodnetwork/ui/ConsoleUI.java
-src/main/java/com/fastfoodnetwork/purchasing/application/PurchasingService.java
+src/main/java/com/fastfoodnetwork/purchasing/application/service/SupplyOrderService.java
 src/main/java/com/fastfoodnetwork/purchasing/domain/Delivery.java
-src/main/java/com/fastfoodnetwork/purchasing/domain/DeliveryRepository.java
+src/main/java/com/fastfoodnetwork/purchasing/application/port/out/DeliveryRepository.java
 src/main/java/com/fastfoodnetwork/purchasing/domain/SupplyOrder.java
-src/main/java/com/fastfoodnetwork/purchasing/domain/SupplyOrderRepository.java
-src/main/java/com/fastfoodnetwork/purchasing/infrastructure/InMemoryDeliveryRepository.java
-src/main/java/com/fastfoodnetwork/purchasing/infrastructure/InMemorySupplyOrderRepository.java
+src/main/java/com/fastfoodnetwork/purchasing/application/port/out/SupplyOrderRepository.java
+src/main/java/com/fastfoodnetwork/purchasing/adapter/out/persistence/InMemoryDeliveryRepository.java
+src/main/java/com/fastfoodnetwork/purchasing/adapter/out/persistence/InMemorySupplyOrderRepository.java
 src/main/java/com/fastfoodnetwork/menu/application/MenuService.java
 src/main/java/com/fastfoodnetwork/menu/domain/Dish.java
 src/main/java/com/fastfoodnetwork/menu/domain/Menu.java
@@ -21,3 +21,7 @@ src/main/java/com/fastfoodnetwork/customerservice/application/CustomerService.ja
 src/main/java/com/fastfoodnetwork/customerservice/domain/CustomerOrder.java
 src/main/java/com/fastfoodnetwork/customerservice/domain/CustomerOrderRepository.java
 src/main/java/com/fastfoodnetwork/customerservice/infrastructure/InMemoryCustomerOrderRepository.java
+src/main/java/com/fastfoodnetwork/purchasing/application/port/in/SupplyOrderUseCase.java
+src/main/java/com/fastfoodnetwork/purchasing/application/port/out/SupplierNotificationPort.java
+src/main/java/com/fastfoodnetwork/purchasing/adapter/out/notification/ConsoleSupplierNotifier.java
+src/main/java/com/fastfoodnetwork/purchasing/adapter/in/console/PurchasingConsoleAdapter.java
