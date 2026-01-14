@@ -1,4 +1,6 @@
-package com.fastfoodnetwork.ui;
+package com.fastfoodnetwork;
+
+import com.fastfoodnetwork.ui.ConsoleUI;
 
 public class Main {
     public static void main(String[] args) {
